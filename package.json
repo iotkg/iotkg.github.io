@@ -1,0 +1,12 @@
+{
+  "name": "iotkg-docs",
+  "version": "1.0.0",
+  "description": "IoTKG docs",
+  "repository": "https://github.com/iotkg/iotkg.github.io",
+  "scripts": {
+    "serve": "npx docsify serve ."
+  },
+  "devDependencies": {
+    "docsify-cli": "4.4.0"
+  }
+}
