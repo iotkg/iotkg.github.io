@@ -5,10 +5,10 @@
 Starts the data collection and BLE advertising process.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
-iotkg.setSensors(...)
-iotkg.run()
+iotkg.setSensors(...);
+iotkg.run();
 ```
 
 ## start
@@ -17,10 +17,10 @@ Starts all processes and saves the code, so that everything
 persists after the device is powered off.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
-iotkg.setSensors(...)
-iotkg.start()
+iotkg.setSensors(...);
+iotkg.start();
 ```
 
 ## setSensors
@@ -37,7 +37,7 @@ Configures the sensors used for data collection.
              data to be stored and faster transfer times. Defaults to `'float32'`.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
 iotkg.setSensors({
     1: {
@@ -48,7 +48,7 @@ iotkg.setSensors({
     },
     2: ...
 })
-iotkg.start()
+iotkg.start();
 ```
 
 ## setStorageByteLimit
@@ -56,14 +56,14 @@ iotkg.start()
 Sets the maximum number of bytes which will be used for storing data. By default all available space is used.
 
 ```js
-const iotkg = require('iotkg')
-const Storage = require('Storage')
+const iotkg = require('iotkg');
+const Storage = require('Storage');
 
 // use half of the available space
-iotkg.setStorageByteLimit(Math.floor(Storage.getFree() / 2))
+iotkg.setStorageByteLimit(Math.floor(Storage.getFree() / 2));
 
-iotkg.setSensors(...)
-iotkg.start()
+iotkg.setSensors(...);
+iotkg.start();
 ```
 
 ## getMiFloraData
@@ -74,18 +74,18 @@ Gets the current value of all the sensors on the MiFlora.
 - **Returns** `Promise<Object>`: A promise which resolves to an object containing the keys `'temperature'`, `'sunlight'`, `'moisture'`, `'fertility'`.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
-const macAddress = 'aa:bb:cc:dd:ee:ff'
-const sensor = 'sunlight'
+const macAddress = 'aa:bb:cc:dd:ee:ff';
+const sensor = 'sunlight';
 
 iotkg.setSensors({
     1: {
         name: sensor,
         getValue: iotkg.getMiFloraData(macAddress).then(data => data[sensor])
     }
-})
-iotkg.start()
+});
+iotkg.start();
 ```
 
 ## getMiFlora...
@@ -97,10 +97,10 @@ The functions `getMiFloraTemperature`, `getMiFloraSunlight`, `getMiFloraMoisture
 
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
-const macAddress = 'aa:bb:cc:dd:ee:ff'
-const secondInterval = 45
+const macAddress = 'aa:bb:cc:dd:ee:ff';
+const secondInterval = 45;
 
 iotkg.setSensors({
     1: { name: 'Temperature', secondInterval,
@@ -108,7 +108,7 @@ iotkg.setSensors({
     2: { name: 'Moisture', secondInterval,
         getValue: iotkg.getMiFloraMoisture(macAddress) },
 })
-iotkg.start()
+iotkg.start();
 ```
 
 ## getMiFloraSensorPreset
@@ -121,12 +121,12 @@ Returns a sensor configuration object which can be passed directly to [`setSenso
 - **Returns** `Object`: A sensor configuration object.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
-const macAddress = 'aa:bb:cc:dd:ee:ff'
+const macAddress = 'aa:bb:cc:dd:ee:ff';
 
-iotkg.setSensors(iotkg.getMiFloraSensorPreset(macAddress, 45))
-iotkg.start()
+iotkg.setSensors(iotkg.getMiFloraSensorPreset(macAddress, 45));
+iotkg.start();
 ```
 
 ## findMiFloraDevices
@@ -138,12 +138,12 @@ Searches for MiFloras devices in Bluetooth range. The MAC address of every disco
 - **secondLimit**: The time limit before the search ends, in seconds. Defaults to 10.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
 iotkg.findMiFloraDevices(macAddress => {
     iotkg.run()
-}, 1)
-save()
+}, 1);
+save();
 ```
 
 
@@ -157,10 +157,10 @@ Starts collecting data from a MiFlora sensor.
 - **sensorList** `['temperature|sunlight|moisture|fertility']`: The list of sensors which should be included. Defaults to all of them.
 
 ```js
-const iotkg = require('iotkg')
+const iotkg = require('iotkg');
 
 iotkg.startMiFlora({
     macAddress: 'aa:bb:cc:dd:ee:ff',
     secondInterval: 45,
-})
+});
 ```
