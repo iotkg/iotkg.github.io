@@ -31,18 +31,16 @@ If you are using a Puck.js, you can collect light and temperature values from th
 const iotkg = require('iotkg');
 const Puck = require('Puck');
 
-const secondInterval = 45;
-
 iotkg.setSensors({
     1: {
         name: 'Temperature',
         getValue: E.getTemperature,
-        secondInterval,
+        secondInterval: 45,
     },
     2: {
         name: 'Light',
         getValue: Puck.light,
-        secondInterval,
+        secondInterval: 45,
     },
 });
 iotkg.start();
@@ -75,53 +73,57 @@ Then, you can hardcode this address:
 ```javascript
 const iotkg = require('iotkg');
 
-const macAddress = 'aa:bb:cc:dd:ee:ff';
-iotkg.startMiFlora({ macAddress, secondInterval: 30 });
+iotkg.startMiFlora({
+    macAddress: 'aa:bb:cc:dd:ee:ff',
+    secondInterval: 45,
+});
 ```
 
 ## Multiple MiFlora sensors
 
 You can collect temperature from two (or more) MiFloras:
 
-
 ```javascript
 const iotkg = require('iotkg');
 
-const secondInterval = 45;
 const macAddress1 = 'a1:b1:c1:d1:e1:f1';
 const macAddress2 = 'a2:b2:c2:d2:e2:f2';
 
 iotkg.setSensors({
     1: {
         name: 'Temperature 1',
-        getValue: () => getMiFloraTemperature(macAddress1)
-        secondInterval,
+        getValue: () => iotkg.getMiFloraTemperature(macAddress1),
+        secondInterval: 45,
     },
     2: {
         name: 'Temperature 2',
-        getValue: () => getMiFloraTemperature(macAddress2)
-        secondInterval,
+        getValue: () => iotkg.getMiFloraTemperature(macAddress2),
+        secondInterval: 45,
     },
 });
 iotkg.start();
 ```
 
-If you want to collect all of the sensor values, you can make this more general:
+If you want to collect several sensor values, you can make this more general:
 
 ```javascript
 const iotkg = require('iotkg');
 
-const sensors1 = getMiFloraSensorPreset('a1:b1:c1:d1:e1:f1', 45);
-const sensors2 = getMiFloraSensorPreset('a2:b2:c2:d2:e2:f2', 45);
+const macAddress1 = 'a1:b1:c1:d1:e1:f1';
+const macAddress2 = 'a2:b2:c2:d2:e2:f2';
+
+const sensors1 = iotkg.getMiFloraSensorPreset(macAddress1, 45);
+const sensors2 = iotkg.getMiFloraSensorPreset(macAddress2, 45);
 
 const sensors = {};
-for (let i = 1; i <= 4; i++) {
-    sensors[i] = {...sensors1, name: sensors1[i] + ' 1' };
-    sensors[i + 4] = {...sensors2, name: sensors2[i] + ' 2' };
+for (let i = 1; i <= 3; i++) {
+    sensors1[i].name = sensors1[i].name + ' 1';
+    sensors2[i].name = sensors2[i].name + ' 2';
+
+    sensors[i] = sensors1[i];
+    sensors[i + 3] = sensors2[i];
 }
 
 iotkg.setSensors(sensors);
 iotkg.start();
-
-
-
+```

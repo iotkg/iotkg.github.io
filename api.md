@@ -82,7 +82,7 @@ const sensor = 'sunlight';
 iotkg.setSensors({
     1: {
         name: sensor,
-        getValue: iotkg.getMiFloraData(macAddress).then(data => data[sensor])
+        getValue: iotkg.getMiFloraData(macAddress).then(data => data[sensor]),
     }
 });
 iotkg.start();
@@ -103,9 +103,9 @@ const macAddress = 'aa:bb:cc:dd:ee:ff';
 const secondInterval = 45;
 
 iotkg.setSensors({
-    1: { name: 'Temperature', secondInterval,
+    1: { name: 'Temperature', secondInterval: secondInterval,
         getValue: iotkg.getMiFloraTemperature(macAddress) },
-    2: { name: 'Moisture', secondInterval,
+    2: { name: 'Moisture', secondInterval: secondInterval,
         getValue: iotkg.getMiFloraMoisture(macAddress) },
 })
 iotkg.start();
@@ -141,11 +141,11 @@ Searches for MiFloras devices in Bluetooth range. The MAC address of every disco
 const iotkg = require('iotkg');
 
 iotkg.findMiFloraDevices(macAddress => {
-    iotkg.run()
+    iotkg.setSensors(iotkg.getMiFloraSensorPreset(macAddress, 45));
+    iotkg.run();
 }, 1);
 save();
 ```
-
 
 ## startMiFlora
 Starts collecting data from a MiFlora sensor.
