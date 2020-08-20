@@ -73,57 +73,51 @@ Then, you can hardcode this address:
 ```javascript
 const iotkg = require('iotkg');
 
-iotkg.startMiFlora({
-    macAddress: 'aa:bb:cc:dd:ee:ff',
-    secondInterval: 45,
-});
+iotkg.startMiFlora('aa:bb:cc:dd:ee:ff', 45);
 ```
 
 ## Multiple MiFlora sensors
 
-You can collect temperature from two (or more) MiFloras:
+Let's say you want to collect temperature and humidity from two (or more) MiFloras:
 
 ```javascript
 const iotkg = require('iotkg');
 
-const macAddress1 = 'a1:b1:c1:d1:e1:f1';
-const macAddress2 = 'a2:b2:c2:d2:e2:f2';
-
 iotkg.setSensors({
     1: {
         name: 'Temperature 1',
-        getValue: () => iotkg.getMiFloraTemperature(macAddress1),
-        secondInterval: 45,
+        getValue: () => iotkg.getMiFloraData('a1:b1:c1:d1:e1:f1'),
+        pickValue: 'temperature',
+        secondInterval: 35,
     },
     2: {
         name: 'Temperature 2',
-        getValue: () => iotkg.getMiFloraTemperature(macAddress2),
+        getValue: () => iotkg.getMiFloraTemperature('a2:b2:c2:d2:e2:f2'),
+        pickValue: 'temperature',
         secondInterval: 45,
+    },
+    3: {
+        name: 'Humidity 1',
+        combineWith: 1,
+        pickValue: 'humidity',
+    },
+    4: {
+        name: 'Humidity 2',
+        combineWith: 2,
+        pickValue: 'humidity',
     },
 });
 iotkg.start();
 ```
 
-If you want to collect several sensor values, you can make this more general:
+You can also simplify this for all sensor values:
 
 ```javascript
 const iotkg = require('iotkg');
 
-const macAddress1 = 'a1:b1:c1:d1:e1:f1';
-const macAddress2 = 'a2:b2:c2:d2:e2:f2';
-
-const sensors1 = iotkg.getMiFloraSensorPreset(macAddress1, 45);
-const sensors2 = iotkg.getMiFloraSensorPreset(macAddress2, 45);
-
-const sensors = {};
-for (let i = 1; i <= 3; i++) {
-    sensors1[i].name = sensors1[i].name + ' 1';
-    sensors2[i].name = sensors2[i].name + ' 2';
-
-    sensors[i] = sensors1[i];
-    sensors[i + 3] = sensors2[i];
-}
-
-iotkg.setSensors(sensors);
+iotkg.setSensors({
+    ...getMiFloraSensorPreset(35, 'a1:b1:c1:d1:e1:f1', 1),
+    ...getMiFloraSensorPreset(45, 'a2:b2:c2:d2:e2:f2', 5),
+});
 iotkg.start();
 ```

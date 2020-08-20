@@ -30,11 +30,13 @@ Configures the sensors used for data collection.
 - **sensors** `Object`:
     - **[sensor id]** `number`:
         - **name** `String`: The name of the sensor. Must be less than 20 characters.
-        - **getValue** `function`: A function which returns the current value of the sensor.
+        - **getValue** `function`: A function which returns the current value of the sensor, or a promise which resolves to the current value.
         - **secondInterval** `number`: How frequently the sensor should be queried, in seconds. Defaults to 60.
         - **dataType** `'uint8|int8|uint16|int16|uint32|int32|float32|float64'`:
              The most suitable data type for the sensor. Smaller data types will allow for more
              data to be stored and faster transfer times. Defaults to `'float32'`.
+        - **pickValue** `string|function`: Used to further narrow down the result of `getValue`, either by indexing it with the given key string, or by passing it through the given function.
+        - **combineWith** `number` (optional): An existing sensor ID, such that value and interval of this sensor depends on the specified sensor. You can use `pickValue` to narrow down the result further. This is commonly used to create 'groups' of sensors which collect multiple values from the same source.
 
 ```js
 const iotkg = require('iotkg');
@@ -88,35 +90,13 @@ iotkg.setSensors({
 iotkg.start();
 ```
 
-## getMiFlora...
-
-The functions `getMiFloraTemperature`, `getMiFloraSunlight`, `getMiFloraMoisture`, `getMiFloraFertility` each get the current value of a single sensor on the MiFlora.
-
-- **macAddress** `string`: The MAC address of the MiFlora.
-- **Returns** `Promise<number>`: A promise which resolves the sensor value.
-
-
-```js
-const iotkg = require('iotkg');
-
-const macAddress = 'aa:bb:cc:dd:ee:ff';
-const secondInterval = 45;
-
-iotkg.setSensors({
-    1: { name: 'Temperature', secondInterval: secondInterval,
-        getValue: iotkg.getMiFloraTemperature(macAddress) },
-    2: { name: 'Moisture', secondInterval: secondInterval,
-        getValue: iotkg.getMiFloraMoisture(macAddress) },
-})
-iotkg.start();
-```
-
 ## getMiFloraSensorPreset
 
 Returns a sensor configuration object which can be passed directly to [`setSensors`](#setSensors), and configures the device to collect data from a MiFlora.
 
 - **macAddress** `string`: The MAC address of the MiFlora.
 - **secondInterval** `number`: How frequently the sensors should be queried, in seconds. Defaults to 30.
+- **startIndex** `number`: The sensor ID number to start from in the configuration object. Defaults to 1.
 - **sensorList** `['temperature|sunlight|moisture|fertility']`: The list of sensors which should be included. Defaults to all of them.
 - **Returns** `Object`: A sensor configuration object.
 
@@ -150,17 +130,13 @@ save();
 ## startMiFlora
 Starts collecting data from a MiFlora sensor.
 
-- **args** `object|number`: Either a single **secondInterval**, or an argument dictionary.
-- **args.macAddress** `string`: The MAC address of the MiFlora. If not provided, the device will permanently use the first MiFlora it discovers.
-- **args.secondInterval** `number`: How frequently the sensor should be queried, in seconds.
+- **secondInterval** `number`: How frequently the sensor should be queried, in seconds.
     If not provided, the device will search for a MiFlora in proximity.
+- **macAddress** `string|undefined`: The MAC address of the MiFlora. If not provided, the device will permanently use the first MiFlora it discovers.
 - **sensorList** `['temperature|sunlight|moisture|fertility']`: The list of sensors which should be included. Defaults to all of them.
 
 ```js
 const iotkg = require('iotkg');
 
-iotkg.startMiFlora({
-    macAddress: 'aa:bb:cc:dd:ee:ff',
-    secondInterval: 45,
-});
+iotkg.startMiFlora(45, 'aa:bb:cc:dd:ee:ff');
 ```
