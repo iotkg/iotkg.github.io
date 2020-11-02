@@ -29,7 +29,6 @@ If you are using a Puck.js, you can collect light and temperature values from th
 
 ```javascript
 const iotkg = require('iotkg');
-const Puck = require('Puck');
 
 iotkg.setSensors({
     1: {
@@ -115,9 +114,9 @@ You can also simplify this for all sensor values:
 ```javascript
 const iotkg = require('iotkg');
 
-iotkg.setSensors({
-    ...getMiFloraSensorPreset(35, 'a1:b1:c1:d1:e1:f1', 1),
-    ...getMiFloraSensorPreset(45, 'a2:b2:c2:d2:e2:f2', 5),
-});
+iotkg.setSensors(Object.assign(
+    getMiFloraSensorPreset(35, 'a1:b1:c1:d1:e1:f1', 1),
+    getMiFloraSensorPreset(45, 'a2:b2:c2:d2:e2:f2', 5),
+));
 iotkg.start();
 ```
